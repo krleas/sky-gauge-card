@@ -34,8 +34,6 @@ Switch to **Advanced** to customize the appearance. Select the main reading, sec
 
 ![Advanced visual editor](docs/images/advanced-editor.png)
 
-![Indicator controls](docs/images/indicator-editor.png)
-
 ## Install with HACS
 
 **First regular release: v0.1.0.** Available as a **custom HACS repository**. Inclusion in HACS's default catalog is a separate review process.
