@@ -5,7 +5,7 @@
 
 A customizable Home Assistant gauge card with a visual editor, a live preview and responsive sizing. Start small at **3 columns × 2 rows**, keep the classic **4 × 3**, or make it larger — the whole composition scales together.
 
-![Single and dual gauges](docs/images/gauges.png)
+![Single and dual gauges](https://raw.githubusercontent.com/krleas/sky-gauge-card/main/docs/images/gauges.png)
 
 ## More than a gauge with a few color options
 
@@ -26,13 +26,13 @@ Choose your entity, then make the gauge your own. Adjust the arc, indicator, typ
 
 Get a working gauge quickly: entity, name, icon, limits, scale, units, decimal places, Single/Dual, arc style and colors.
 
-![Simple editor](docs/images/simple-editor.png)
+![Simple editor](https://raw.githubusercontent.com/krleas/sky-gauge-card/main/docs/images/simple-editor.png)
 
 ## Detailed when you need it
 
 Switch to **Advanced** to customize the appearance. Select the main reading, secondary reading, unit, arc, indicator, icon or name, and see the result in the live preview.
 
-![Advanced visual editor](docs/images/advanced-editor.png)
+![Advanced visual editor](https://raw.githubusercontent.com/krleas/sky-gauge-card/main/docs/images/advanced-editor.png)
 
 ## Install with HACS
 
@@ -87,7 +87,7 @@ grid_options:
 ## Support development ❤️
 
 <a href="https://github.com/sponsors/krleas">
-  <img src="docs/images/support-banner.png" alt="Buy me a coffee — Support Kopterworx via GitHub Sponsors" width="520">
+  <img src="https://raw.githubusercontent.com/krleas/sky-gauge-card/main/docs/images/support-banner.png" alt="Buy me a coffee — Support Kopterworx via GitHub Sponsors" width="520">
 </a>
 
 Free and open source under the MIT license. [Sponsor Kopterworx](https://github.com/sponsors/krleas), star the project or share useful feedback. Support is optional; all features remain free.
