@@ -36,7 +36,7 @@ Switch to **Advanced** to customize the appearance. Select the main reading, sec
 
 ## Install with HACS
 
-**First regular release: v0.1.0.** Available as a **custom HACS repository**. Inclusion in HACS's default catalog is a separate review process.
+**Current release: v0.1.1.** First regular release: v0.1.0. Available as a **custom HACS repository**. Inclusion in HACS's default catalog is a separate review process.
 
 1. In **HACS → ⋮ → Custom repositories**, add:
    `https://github.com/krleas/sky-gauge-card`
@@ -86,9 +86,7 @@ grid_options:
 
 ## Support development ❤️
 
-<a href="https://github.com/sponsors/krleas">
-  <img src="https://raw.githubusercontent.com/krleas/sky-gauge-card/main/docs/images/support-banner.png" alt="Buy me a coffee — Support Kopterworx via GitHub Sponsors" width="520">
-</a>
+[![Buy me a coffee — Support Kopterworx](https://raw.githubusercontent.com/krleas/sky-gauge-card/main/docs/images/support-banner.png)](https://github.com/sponsors/krleas)
 
 Free and open source under the MIT license. [Sponsor Kopterworx](https://github.com/sponsors/krleas), star the project or share useful feedback. Support is optional; all features remain free.
 

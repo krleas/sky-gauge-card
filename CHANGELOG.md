@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.1 — 2026-11-02
+
+- Fix the sponsorship banner in HACS by using linked Markdown instead of an HTML image.
+- Use absolute image URLs in README for reliable rendering outside GitHub.
+- Gauge behavior is unchanged.
+
 ## v0.1.0 — 2026-11-02
 
 First regular release of Sky Gauge Card by Kopterworx.
