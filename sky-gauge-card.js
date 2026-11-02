@@ -1,8 +1,8 @@
-/* Sky Gauge Card v0.1.1 · by Kopterworx · MIT License */
+/* Sky Gauge Card v0.1.2 · by Kopterworx · MIT License */
 (()=>{
 'use strict';
 
-const SKY_GAUGE_VERSION='0.1.1';
+const SKY_GAUGE_VERSION='0.1.2';
 const SKY_ADV_GROUPS={
   arc:{title:'Arc geometry',fields:[
     ['arc_radius','Radius',89,45,95,1],['arc_width','Arc thickness',10,2,20,1],
@@ -67,6 +67,11 @@ class SkyGaugeCard extends HTMLElement {
     }
   }
   disconnectedCallback(){this._sizeObserver?.disconnect();}
+  _showMoreInfo(){
+    if(this._config.entity)this.dispatchEvent(new CustomEvent('hass-more-info',{
+      detail:{entityId:this._config.entity},bubbles:true,composed:true
+    }));
+  }
   _layoutComposition(){
     const card=this.shadowRoot.querySelector('ha-card'),stage=this.shadowRoot.querySelector('.composition');
     if(!card||!stage)return;
@@ -350,7 +355,7 @@ class SkyGaugeCard extends HTMLElement {
         ha-card{width:100%;height:100%;min-height:0;aspect-ratio:160 / 184;box-sizing:border-box;overflow:hidden;position:relative;
           --ha-card-background:rgba(0,0,0,0.7);--ha-card-box-shadow:none;
           background:rgba(0,0,0,0.7) !important;border:1px solid rgba(255,255,255,0.12);
-          border-radius:13px;box-shadow:none !important;
+          border-radius:13px;box-shadow:none !important;cursor:pointer;
           color:var(--primary-text-color,#fff);font-family:Montserrat,Arial,sans-serif}
         .composition{position:absolute;left:50%;top:50%;width:160px;height:184px;transform-origin:center;visibility:hidden}
         svg{display:block;width:160px;height:158px;overflow:visible}
@@ -363,7 +368,7 @@ class SkyGaugeCard extends HTMLElement {
         ha-icon{--mdc-icon-size:${secondaryEnabled?21:26}px;color:#53a9df;height:${secondaryEnabled?21:26}px;transform:translateY(-8px)}
         .name{max-width:calc(100% - 12px);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:15px;line-height:18px;font-weight:${weight(c.name_font_weight,500)};letter-spacing:${spacing(c.name_letter_spacing,0)}px}
       </style>
-      <ha-card>
+      <ha-card role="button" tabindex="0" aria-label="${safe(label)}: More info">
         <div class="composition">
         <svg viewBox="0 0 220 188" preserveAspectRatio="xMidYMid meet" aria-label="${safe(label)} ${safe(shown)} ${safe(unit)}">
           ${dualMode?dualSvg:`<path d="${path(start,start+sweep)}" fill="none" stroke="rgba(128,128,128,.20)" stroke-width="10" stroke-linecap="round"/>`}
@@ -376,6 +381,13 @@ class SkyGaugeCard extends HTMLElement {
         <div class="bottom"><ha-icon icon="${safe(c.icon)}"></ha-icon><div class="name" title="${safe(label)}">${safe(label)}</div></div>
         </div>
       </ha-card>`;
+    const interactiveCard=this.shadowRoot.querySelector('ha-card');
+    if(interactiveCard){
+      interactiveCard.onclick=()=>this._showMoreInfo();
+      interactiveCard.onkeydown=event=>{
+        if(event.key==='Enter'||event.key===' '){event.preventDefault();this._showMoreInfo();}
+      };
+    }
     this._applyAdvanced(num,dualMode);
     this._layoutComposition();
     requestAnimationFrame(()=>this._layoutComposition());
