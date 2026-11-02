@@ -1,0 +1,13 @@
+{
+  "name": "sky-gauge-card",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Responsive, fully customizable single and dual Home Assistant gauge card by Kopterworx",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check sky-gauge-card.js"
+  },
+  "license": "MIT"
+}
+
