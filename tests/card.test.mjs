@@ -26,3 +26,14 @@ test('missing entity and unsafe label text',()=>{const {Card}=runtime();const ca
 test('invalid configuration rejected',()=>{const {Card}=runtime();const card=new Card();assert.throws(()=>card.setConfig({entity:'sensor.a',min:10,max:5}));assert.throws(()=>card.setConfig({entity:'sensor.a',decimals:100}));assert.throws(()=>card.setConfig({entity:'sensor.a',mode:'dual'}));});
 test('presets: style only preserves data, full restores, reset restores defaults',()=>{const {Editor}=runtime();const editor=new Editor();editor._render=()=>{};editor._config={entity:'sensor.first',name:'First',min:0,max:14000,unit:'kW',scale:.001,value_font_size:55};editor._savePreset('Demo');assert.throws(()=>editor._savePreset('Demo'));editor._config={entity:'sensor.second',name:'Second',min:-6000,max:6000,unit:'W',scale:1,value_font_size:30};editor._loadPreset('Demo','style');assert.equal(editor._config.entity,'sensor.second');assert.equal(editor._config.value_font_size,55);editor._resetAppearance();assert.equal(editor._config.value_font_size,undefined);assert.equal(editor._config.entity,'sensor.second');editor._loadPreset('Demo','full');assert.equal(editor._config.entity,'sensor.first');});
 
+
+test('card click and keyboard open the current primary entity after live updates',()=>{
+ const {Card}=runtime();const card=new Card();const surface={style:{setProperty(){}}};
+ card.shadowRoot.querySelector=s=>s==='ha-card'?surface:null;
+ card.setConfig({entity:'sensor.first',name:'First'});card.hass={states:{'sensor.first':{state:'10'}}};
+ surface.onclick();assert.equal(card.events.at(-1).type,'hass-more-info');assert.equal(card.events.at(-1).detail.entityId,'sensor.first');assert.equal(card.events.at(-1).bubbles,true);assert.equal(card.events.at(-1).composed,true);
+ card.setConfig({entity:'sensor.second',mode:'dual',secondary_entity:'sensor.other'});card.hass={states:{'sensor.second':{state:'20'},'sensor.other':{state:'30'}}};
+ for(const key of ['Enter',' ']){let prevented=false;surface.onkeydown({key,preventDefault(){prevented=true;}});assert.ok(prevented);assert.equal(card.events.at(-1).detail.entityId,'sensor.second');}
+ const count=card.events.length;surface.onkeydown({key:'Escape'});assert.equal(card.events.length,count);
+ card.hass={states:{'sensor.second':{state:'21'},'sensor.other':{state:'31'}}};surface.onclick();assert.equal(card.events.length,count+1);
+});
