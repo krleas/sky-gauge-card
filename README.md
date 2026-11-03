@@ -36,7 +36,9 @@ Switch to **Advanced** to customize the appearance. Select the main reading, sec
 
 ## Install with HACS
 
-**Current release: v0.1.1.** First regular release: v0.1.0. Available as a **custom HACS repository**. Inclusion in HACS's default catalog is a separate review process.
+**Current release: v0.1.3.** Search for **Sky Gauge Card** in HACS and download it once it appears in the default catalog. The catalog submission is currently under review.
+
+Until the catalog review is complete, install it as a custom repository:
 
 1. In **HACS → ⋮ → Custom repositories**, add:
    `https://github.com/krleas/sky-gauge-card`
@@ -77,7 +79,7 @@ grid_options:
 - **Presets are browser-local:** they do not currently sync between devices or browsers. Style-only loading keeps your entities, names, limits, scaling and units.
 - **Missing primary data:** shown as `—`, not as a made-up numeric value.
 - **Long names:** remain on one line and truncate with an ellipsis; hover to read the full name.
-- **Fonts:** Montserrat is the default. The card requests its weights from Google Fonts. If that request is blocked, the browser uses the fallback font.
+- **Fonts:** The card uses Montserrat when it is already available on your dashboard, otherwise Arial/sans-serif. It does not download fonts or contact Google Fonts. The Advanced editor can select another locally available font.
 - Advanced settings control the composition's relative design. Use HA's **Layout** tab for the actual card dimensions.
 
 ## Support and feedback

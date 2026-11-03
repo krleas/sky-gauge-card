@@ -1,8 +1,13 @@
-/* Sky Gauge Card v0.1.2 · by Kopterworx · MIT License */
+/* Sky Gauge Card v0.1.3 · by Kopterworx · MIT License */
 (()=>{
 'use strict';
 
-const SKY_GAUGE_VERSION='0.1.2';
+const SKY_GAUGE_VERSION='0.1.3';
+// SVG attributes only accept literal hex colors, never markup or paint URLs.
+const skyHexColor=(value,fallback='#ffffff')=>{
+  if(typeof value!=='string'||!/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(value))return fallback;
+  return value.length===4?'#'+value.slice(1).split('').map(x=>x+x).join(''):value;
+};
 const SKY_ADV_GROUPS={
   arc:{title:'Arc geometry',fields:[
     ['arc_radius','Radius',89,45,95,1],['arc_width','Arc thickness',10,2,20,1],
@@ -56,15 +61,6 @@ class SkyGaugeCard extends HTMLElement {
       this._sizeObserver.observe(this);
     }
     requestAnimationFrame(()=>this._layoutComposition());
-    // Load the complete Montserrat weight range once; the dashboard's
-    // existing font link provides only weight 500.
-    if (!document.getElementById('sky-gauge-montserrat-weights')) {
-      const link=document.createElement('link');
-      link.id='sky-gauge-montserrat-weights';
-      link.rel='stylesheet';
-      link.href='https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap';
-      document.head.appendChild(link);
-    }
   }
   disconnectedCallback(){this._sizeObserver?.disconnect();}
   _showMoreInfo(){
@@ -143,9 +139,7 @@ class SkyGaugeCard extends HTMLElement {
     const path=(a,b)=>{const [x1,y1]=polar(a),[x2,y2]=polar(b);return 'M '+x1.toFixed(3)+' '+y1.toFixed(3)+' A '+radius+' '+radius+' 0 '+((b-a)>180?1:0)+' 1 '+x2.toFixed(3)+' '+y2.toFixed(3);};
     const colorIntensity=Math.max(0,Math.min(1,Number.isFinite(Number(c.color_intensity))?Number(c.color_intensity):0.8));
     const toneColor=color=>{
-      const hex=String(color||'#ffffff').replace('#','');
-      const full=hex.length===3?hex.split('').map(x=>x+x).join(''):hex;
-      if(!/^[0-9a-fA-F]{6}$/.test(full))return color;
+      const full=skyHexColor(color).slice(1);
       return '#'+[0,2,4].map(i=>Math.round(parseInt(full.slice(i,i+2),16)*colorIntensity).toString(16).padStart(2,'0')).join('');
     };
     const segs=(Array.isArray(c.segments)?c.segments:[])
@@ -234,8 +228,8 @@ class SkyGaugeCard extends HTMLElement {
       return 'M '+x1.toFixed(3)+' '+y1.toFixed(3)+' A '+r+' '+r+' 0 '+((b-a)*sweep>180?1:0)+' 1 '+x2.toFixed(3)+' '+y2.toFixed(3);
     };
     const dualDefaults=[
-      {from:0,to:.5,color:c.dual_negative_color||'#159d1c'},
-      {from:.5,to:1,color:c.dual_positive_color||'#d72323'}
+      {from:0,to:.5,color:skyHexColor(c.dual_negative_color,'#159d1c')},
+      {from:.5,to:1,color:skyHexColor(c.dual_positive_color,'#d72323')}
     ];
     const dualRing=(r,id,segments)=>{
       const secondary=id==='sky-dual-inner';
@@ -302,11 +296,11 @@ class SkyGaugeCard extends HTMLElement {
       const coords='x1="'+x1.toFixed(3)+'" y1="'+y1.toFixed(3)+'" x2="'+x2.toFixed(3)+'" y2="'+y2.toFixed(3)+'"';
       if(c.indicator_hidden)return '';
       if(c.indicator_style==='dot'){
-        const [x,y]=pos(r),dotColor=arcStyle==='indicator'?colorAt(ranges,p,r===dualRadius):(c.indicator_color||'#ffffff');
-        return '<circle class="gauge-indicator-dot" cx="'+x+'" cy="'+y+'" r="'+num('indicator_width',8,5,20)/2+'" fill="'+dotColor+'" stroke="'+(c.indicator_outline_color||'#202020')+'" stroke-width="'+num('indicator_outline_width',2,0,8)+'"/>';
+        const [x,y]=pos(r),dotColor=arcStyle==='indicator'?colorAt(ranges,p,r===dualRadius):skyHexColor(c.indicator_color);
+        return '<circle class="gauge-indicator-dot" cx="'+x+'" cy="'+y+'" r="'+num('indicator_width',8,5,20)/2+'" fill="'+dotColor+'" stroke="'+skyHexColor(c.indicator_outline_color,'#202020')+'" stroke-width="'+num('indicator_outline_width',2,0,8)+'"/>';
       }
       return '<line '+coords+' stroke="#202020" stroke-width="11" stroke-linecap="round"/>'
-        +'<line '+coords+' stroke="'+(arcStyle==='indicator'?colorAt(ranges,p,r===dualRadius):(c.indicator_color||'#ffffff'))+'" stroke-width="6" stroke-linecap="round"/>';
+        +'<line '+coords+' stroke="'+(arcStyle==='indicator'?colorAt(ranges,p,r===dualRadius):skyHexColor(c.indicator_color))+'" stroke-width="6" stroke-linecap="round"/>';
     };
     const dualSvg=dualMode
       ? '<defs>'+outerDual.gradient+innerDual.gradient+'</defs>'
@@ -324,9 +318,9 @@ class SkyGaugeCard extends HTMLElement {
     };
     const [ix1,iy1]=coordAt(radius-indicatorLength/2);
     const [ix2,iy2]=coordAt(radius+indicatorLength/2);
-    const indicatorColor=arcStyle==='indicator'?colorAt(c.segments,f):(/^#[0-9a-fA-F]{3,8}$/.test(c.indicator_color)?c.indicator_color:'#ffffff');
+    const indicatorColor=arcStyle==='indicator'?colorAt(c.segments,f):skyHexColor(c.indicator_color);
     const indicator=c.indicator_hidden?'':indicatorStyle==='dot'
-      ? '<circle class="gauge-indicator-dot" cx="'+dx.toFixed(3)+'" cy="'+dy.toFixed(3)+'" r="'+indicatorWidth/2+'" fill="'+indicatorColor+'" stroke="'+(c.indicator_outline_color||'#202020')+'" stroke-width="'+num('indicator_outline_width',2,0,8)+'"/>'
+      ? '<circle class="gauge-indicator-dot" cx="'+dx.toFixed(3)+'" cy="'+dy.toFixed(3)+'" r="'+indicatorWidth/2+'" fill="'+indicatorColor+'" stroke="'+skyHexColor(c.indicator_outline_color,'#202020')+'" stroke-width="'+num('indicator_outline_width',2,0,8)+'"/>'
       : '<line x1="'+ix1.toFixed(3)+'" y1="'+iy1.toFixed(3)+'" x2="'+ix2.toFixed(3)+'" y2="'+iy2.toFixed(3)+'" stroke="#202020" stroke-width="'+(indicatorWidth+6.5)+'" stroke-linecap="round"/>'
         +'<line x1="'+ix1.toFixed(3)+'" y1="'+iy1.toFixed(3)+'" x2="'+ix2.toFixed(3)+'" y2="'+iy2.toFixed(3)+'" stroke="'+indicatorColor+'" stroke-width="'+indicatorWidth+'" stroke-linecap="round"/>';
     const shown=Number.isFinite(raw)?(raw*Number(c.scale)).toFixed(Number(c.decimals)):'—';
@@ -704,7 +698,7 @@ class SkyGaugeCardEditor extends HTMLElement {
     return c[key]??dynamic[key]??fallback;
   }
   _advancedRender(){
-    this.shadowRoot.innerHTML='<style>:host{display:block}.studio{display:grid;grid-template-columns:minmax(180px,.9fr) minmax(190px,1.1fr);gap:16px}.preview-panel{position:sticky;top:8px;align-self:start;padding:14px;border:1px solid var(--divider-color,#444);border-radius:14px;background:var(--secondary-background-color,#181818)}.preview{max-width:300px;margin:0 auto}.hint{font-size:12px;line-height:1.5;color:var(--secondary-text-color,#aaa)}.parts{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}.parts button{font-size:12px;padding:7px 10px}button{background:transparent;color:var(--primary-text-color,#fff);border:1px solid var(--divider-color,#555);border-radius:8px;padding:9px 12px;cursor:pointer}.active{background:var(--primary-color,#168ccc);color:white}h3{margin:0 0 14px;font-size:17px}.control{display:block;margin-bottom:15px;font-size:13px}.control>span{display:block;margin-bottom:6px}.inputs{display:flex;align-items:center;gap:9px}input[type=range]{width:100%;min-width:40px;accent-color:var(--primary-color,#168ccc)}input[type=number]{width:67px}input,select{box-sizing:border-box;padding:8px;border:1px solid var(--divider-color,#555);border-radius:6px;background:var(--card-background-color,#222);color:var(--primary-text-color,#fff)}input[type=color]{width:100%;height:38px;padding:3px}select,input[type=text]{width:100%}.inspector{min-width:0}.status{font-size:12px;color:var(--error-color,#f66)}@media(max-width:520px){.studio{grid-template-columns:1fr}.preview-panel{position:static}.preview{max-width:230px}}</style><div class="studio"><div class="preview-panel"><h3>Sky Gauge Studio</h3><div class="preview"></div><p class="hint">Click the value, unit, arc, indicator, icon or name to edit it. Changes update the live preview.</p><div class="parts"></div><p class="hint">Live preview · Sky Gauge Card v0.1.1</p></div><div class="inspector"></div></div>';
+    this.shadowRoot.innerHTML='<style>:host{display:block}.studio{display:grid;grid-template-columns:minmax(180px,.9fr) minmax(190px,1.1fr);gap:16px}.preview-panel{position:sticky;top:8px;align-self:start;padding:14px;border:1px solid var(--divider-color,#444);border-radius:14px;background:var(--secondary-background-color,#181818)}.preview{max-width:300px;margin:0 auto}.hint{font-size:12px;line-height:1.5;color:var(--secondary-text-color,#aaa)}.parts{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}.parts button{font-size:12px;padding:7px 10px}button{background:transparent;color:var(--primary-text-color,#fff);border:1px solid var(--divider-color,#555);border-radius:8px;padding:9px 12px;cursor:pointer}.active{background:var(--primary-color,#168ccc);color:white}h3{margin:0 0 14px;font-size:17px}.control{display:block;margin-bottom:15px;font-size:13px}.control>span{display:block;margin-bottom:6px}.inputs{display:flex;align-items:center;gap:9px}input[type=range]{width:100%;min-width:40px;accent-color:var(--primary-color,#168ccc)}input[type=number]{width:67px}input,select{box-sizing:border-box;padding:8px;border:1px solid var(--divider-color,#555);border-radius:6px;background:var(--card-background-color,#222);color:var(--primary-text-color,#fff)}input[type=color]{width:100%;height:38px;padding:3px}select,input[type=text]{width:100%}.inspector{min-width:0}.status{font-size:12px;color:var(--error-color,#f66)}@media(max-width:520px){.studio{grid-template-columns:1fr}.preview-panel{position:static}.preview{max-width:230px}}</style><div class="studio"><div class="preview-panel"><h3>Sky Gauge Studio</h3><div class="preview"></div><p class="hint">Click the value, unit, arc, indicator, icon or name to edit it. Changes update the live preview.</p><div class="parts"></div><p class="hint">Live preview · Sky Gauge Card v0.1.3</p></div><div class="inspector"></div></div>';
     const preview=document.createElement('sky-gauge-card');this.shadowRoot.querySelector('.preview').append(preview);
     this._preview=preview;this._updatePreview();
     this._selectedPart=this._selectedPart||'value';
