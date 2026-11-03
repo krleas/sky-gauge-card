@@ -37,3 +37,18 @@ test('card click and keyboard open the current primary entity after live updates
  const count=card.events.length;surface.onkeydown({key:'Escape'});assert.equal(card.events.length,count);
  card.hass={states:{'sensor.second':{state:'21'},'sensor.other':{state:'31'}}};surface.onclick();assert.equal(card.events.length,count+1);
 });
+
+test('untrusted colors cannot escape SVG attributes in Single or Dual',()=>{
+ const {Card}=runtime();
+ const payloads=['"/><img src=x onerror=alert(1)>','red','url(https://example.invalid/pixel)','#abcd','#12345','#1234567','#123456\" onload=alert(1)'];
+ let count=0;
+ for(const payload of payloads)for(const mode of ['single','dual'])for(const arc_style of ['full','progress','indicator'])for(const color_mode of ['ranges','fixed','gradient'])for(const indicator_style of ['line','dot'])for(const explicitSecondary of [false,true]){
+  const card=new Card();card.setConfig({entity:'sensor.a',mode,secondary_entity:mode==='dual'?'sensor.b':'',min:0,max:100,secondary_min:0,secondary_max:100,color_intensity:1,arc_style,color_mode,secondary_color_mode:color_mode,indicator_style,...(explicitSecondary?{secondary_segments:[{from:0,to:1,color:payload}]}:{}),indicator_color:payload,indicator_outline_color:payload,dual_negative_color:payload,dual_positive_color:payload,segments:[{from:0,to:.5,color:payload},{from:.5,to:1,color:'#0f0'}],gradient_stops:[{position:0,color:payload},{position:1,color:'#f00'}],secondary_gradient_stops:[{position:0,color:payload},{position:1,color:'#f00'}]});
+  card.hass={states:{'sensor.a':{state:'25'},'sensor.b':{state:'75'}}};
+  const html=card.shadowRoot.innerHTML;assert.ok(!html.includes(payload),payload);assert.ok(!/<img|onerror=|onload=|example\.invalid/i.test(html));
+  for(const [,value]of html.matchAll(/(?:stroke|stop-color|fill)="([^"]*)"/g))assert.match(value,/^(?:#[0-9a-f]{6}|none|white|rgba\(128,128,128,\.20\)|url\(#[a-z0-9-]+\))$/i);
+  count++;
+ }
+ assert.equal(count,504);
+});
+test('strict hex colors retain short and full hex support',()=>{const {Card}=runtime();const card=new Card();card.setConfig({entity:'sensor.a',color_intensity:1,segments:[{from:0,to:1,color:'#aBc'}],indicator_color:'#DeF',indicator_style:'dot'});card.hass={states:{'sensor.a':{state:'25'}}};assert.ok(card.shadowRoot.innerHTML.includes('stroke="#aabbcc"'));assert.ok(card.shadowRoot.innerHTML.includes('fill="#DDeeFF"'));});
