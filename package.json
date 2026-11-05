@@ -1,6 +1,6 @@
 {
   "name": "sky-gauge-card",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "type": "module",
   "description": "Responsive, fully customizable single and dual Home Assistant gauge card by Kopterworx",

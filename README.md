@@ -36,16 +36,14 @@ Switch to **Advanced** to customize the appearance. Select the main reading, sec
 
 ## Install with HACS
 
-**Current release: v0.1.3.** Search for **Sky Gauge Card** in HACS and download it once it appears in the default catalog. The catalog submission is currently under review.
+**Available in the HACS default catalog.** Current regular release: **v0.1.4**.
 
-Until the catalog review is complete, install it as a custom repository:
+1. Open **HACS** and search for **Sky Gauge Card** (category: **Dashboard**).
+2. Download **Sky Gauge Card**.
+3. Refresh your browser. Add a card and choose **Sky Gauge Card**.
+4. Configure it in **Simple**, then switch to **Advanced** if you want more control.
 
-1. In **HACS → ⋮ → Custom repositories**, add:
-   `https://github.com/krleas/sky-gauge-card`
-2. Select **Dashboard**, then add the repository.
-3. Find **Sky Gauge Card** in HACS and download it.
-4. Refresh your browser. Add a card and choose **Sky Gauge Card**.
-5. Configure it in **Simple**, then switch to **Advanced** if you want more control.
+**Can't find it yet?** As a fallback, open **HACS → ⋮ → Custom repositories**, add `https://github.com/krleas/sky-gauge-card` as **Dashboard**, then follow steps 2–4 above.
 
 If HACS has not registered the resource automatically, add `/hacsfiles/sky-gauge-card/sky-gauge-card.js` as a **JavaScript module** in your dashboard resources.
 
