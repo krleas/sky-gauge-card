@@ -36,7 +36,7 @@ Switch to **Advanced** to customize the appearance. Select the main reading, sec
 
 ## Install with HACS
 
-**Available in the HACS default catalog.** Current regular release: **v0.1.4**.
+**Available in the HACS default catalog.** Current regular release: **v0.1.5**.
 
 1. Open **HACS** and search for **Sky Gauge Card** (category: **Dashboard**).
 2. Download **Sky Gauge Card**.
@@ -77,7 +77,8 @@ grid_options:
 - **Presets are browser-local:** they do not currently sync between devices or browsers. Style-only loading keeps your entities, names, limits, scaling and units.
 - **Missing primary data:** shown as `—`, not as a made-up numeric value.
 - **Long names:** remain on one line and truncate with an ellipsis; hover to read the full name.
-- **Fonts:** The card uses Montserrat when it is already available on your dashboard, otherwise Arial/sans-serif. It does not download fonts or contact Google Fonts. The Advanced editor can select another locally available font.
+- **Fonts:** Choose Barlow Semi Condensed or IBM Plex Mono in **Advanced → Main value → Font family**. Both are bundled and load locally. **Browser default** uses the browser's sans-serif font. Montserrat is used when available on your dashboard, with Arial/sans-serif as a fallback.
+- **Vertical position:** Use **Advanced → Arc geometry → Vertical position** to move both rings, the indicators, and the readings together. This is useful for centering a gauge with its name and icon hidden. A value of **0** keeps the original position.
 - Advanced settings control the composition's relative design. Use HA's **Layout** tab for the actual card dimensions.
 
 ## Support and feedback

@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.5 — 2026-11-12
+
+- Move the gauge rings, indicators, and readings up or down with **Vertical position** in **Advanced → Arc geometry**.
+- Choose bundled **Barlow Semi Condensed** or **IBM Plex Mono** in **Advanced → Main value**. Both fonts load locally.
+- Rename the generic sans-serif option to **Browser default**. Existing saved configurations remain compatible.
+
 ## v0.1.1 — 2026-11-02
 
 - Fix the sponsorship banner in HACS by using linked Markdown instead of an HTML image.
